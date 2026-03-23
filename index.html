@@ -47,12 +47,12 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 @keyframes wv{0%,100%{height:6px}50%{height:22px}}
 .lt{flex:1;font-size:14px;color:var(--t3);overflow:hidden;text-overflow:ellipsis}.lt.ht{color:var(--t1)}
 .dl{font-size:18px;flex-shrink:0}
-.pr{display:flex;justify-content:center;padding:10px 0 4px}
+.pr{display:none;justify-content:center;padding:10px 0 4px}
 .pb{width:64px;height:64px;border-radius:50%;border:3px solid var(--bdr);background:var(--card);color:var(--t3);font-size:26px;cursor:pointer;transition:.3s;display:flex;align-items:center;justify-content:center;position:relative}
 .pb.on{border-color:var(--green);color:var(--green);background:rgba(16,185,129,.08);box-shadow:0 0 30px rgba(16,185,129,.3)}
 .pb.on::after{content:'';position:absolute;inset:-10px;border-radius:50%;border:2px solid rgba(16,185,129,.15);animation:ro 2s infinite}
 @keyframes ro{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.5);opacity:0}}
-.plb{text-align:center;font-size:11px;color:var(--t3);margin-top:4px}
+.plb{display:none;font-size:11px;color:var(--t3);margin-top:4px}
 .qs{margin-top:6px}.ql{font-size:10px;color:var(--t3);letter-spacing:1px;margin-bottom:4px}
 .qr{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}.qr::-webkit-scrollbar{display:none}
 .qc{flex-shrink:0;padding:7px 12px;border-radius:18px;background:var(--card);border:1px solid var(--bdr);color:var(--t2);font-size:11px;font-family:inherit;cursor:pointer;white-space:nowrap}
@@ -88,9 +88,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div class="sb"><div class="sd off" id="dot"></div><span class="st" id="stxt">準備完了</span><span class="sl" id="slang"></span></div>
   <div class="ta" id="area"></div>
   <div class="ctrl">
-    <div class="la" id="la"><div class="wc" id="wc"><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div></div><div class="lt" id="lt">通訳を開始するには下のボタンをタップ</div><div class="dl" id="dl"></div></div>
+    <div class="la" id="la"><div class="wc" id="wc"><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div></div><div class="lt" id="lt">🇯🇵🇰🇭 通訳中...</div><div class="dl" id="dl"></div></div>
     <div class="pr"><button class="pb" id="pw" onclick="toggle()">⏻</button></div>
-    <div class="plb" id="pl">タップして通訳開始</div>
+    <div class="plb" id="pl">🟢 常時通訳ON</div>
     <div class="qs"><div class="ql">🇯🇵 指導員クイック</div><div class="qr" id="qj"></div><div class="ql" style="margin-top:6px">🇰🇭 教習生クイック</div><div class="qr" id="qk"></div></div>
   </div>
 </div>
@@ -127,7 +127,7 @@ function speakWithGoogleTTS(text, lang) {
     function playNext() {
       if (idx >= chunks.length) { resolve(); return; }
       const chunk = chunks[idx++];
-      const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${langCode}&q=${encodeURIComponent(chunk)}`;
+      const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=gtx&tl=${langCode}&q=${encodeURIComponent(chunk)}`;
 
       audio.src = url;
       audio.playbackRate = 0.9;
@@ -276,11 +276,13 @@ function init(){
     localStorage.setItem('km','1');
     document.getElementById('setup').classList.add('h');
     // テスト音声
+    // Auto-start listening after setup
+    setTimeout(()=>{ start(); },500);
     setTimeout(()=>speakWithGoogleTTS('教習ブリッジを開始します','ja'),300);
     renderQP();
   }).catch(()=>toast('⚠️ マイクの許可が必要です'));
 }
-if(localStorage.getItem('km')==='1'){document.getElementById('setup').classList.add('h');renderQP();}
+if(localStorage.getItem('km')==='1'){document.getElementById('setup').classList.add('h');renderQP();setTimeout(()=>{unlockAudio();start();},500);}
 
 function toggle(){
   unlockAudio();
@@ -297,8 +299,8 @@ function stop(){
   running=false;
   if(rec){try{rec.abort();}catch(e){}rec=null;}
   document.getElementById('pw').classList.remove('on');
-  document.getElementById('pl').textContent='タップして通訳開始';
-  setSt('off','停止中');setL('通訳を開始するには下のボタンをタップ','');
+  document.getElementById('pl').textContent='🟢 常時通訳ON';
+  setSt('off','停止中');setL('🇯🇵🇰🇭 通訳中...','');
   document.getElementById('wc').classList.remove('on');
   document.getElementById('la').className='la';
 }
