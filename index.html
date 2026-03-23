@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>教習ブリッジ v5</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700;900&family=Noto+Sans+Khmer:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e1a;--card:#111827;--blue:#3b82f6;--orange:#f97316;--green:#10b981;--red:#ef4444;--t1:#f1f5f9;--t2:#94a3b8;--t3:#64748b;--bdr:#1e293b;--r:16px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans JP','Noto Sans Khmer',sans-serif;background:var(--bg);color:var(--t1);min-height:100dvh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 30% 20%,rgba(59,130,246,.07),transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(249,115,22,.05),transparent 50%);pointer-events:none}
+.c{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:12px 16px;min-height:100dvh;display:flex;flex-direction:column}
+.hd{text-align:center;padding:10px 0 4px}
+.hd h1{font-size:22px;font-weight:900;background:linear-gradient(135deg,var(--blue),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hd .sub{font-size:10px;color:var(--t3);letter-spacing:1.5px;margin-top:2px}
+.sb{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 16px;background:var(--card);border-radius:12px;margin:6px 0;border:1px solid var(--bdr)}
+.sd{width:10px;height:10px;border-radius:50%;transition:.3s}
+.sd.on{background:var(--green);animation:p 1.5s infinite}
+.sd.off{background:var(--blue)}
+.sd.sp{background:var(--orange);animation:p .6s infinite}
+@keyframes p{0%,100%{box-shadow:0 0 0 0 currentColor}50%{box-shadow:0 0 0 6px transparent;opacity:.7}}
+.st{font-size:12px;color:var(--t2)}
+.sl{font-size:10px;padding:2px 8px;border-radius:6px;background:rgba(255,255,255,.05);color:var(--t3)}
+.ta{flex:1;display:flex;flex-direction:column;gap:10px;overflow-y:auto;padding:8px 0;scrollbar-width:none}
+.ta::-webkit-scrollbar{display:none}
+.msg{display:flex;flex-direction:column;gap:3px;animation:si .3s ease-out}
+.msg.ja{align-items:flex-start}.msg.km{align-items:flex-end}
+@keyframes si{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.ml{font-size:10px;font-weight:600;padding:0 12px}
+.msg.ja .ml{color:var(--blue)}.msg.km .ml{color:var(--orange)}
+.bb{max-width:92%;padding:12px 16px;border-radius:var(--r);font-size:15px;line-height:1.6}
+.msg.ja .bb{background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(59,130,246,.05));border:1px solid rgba(59,130,246,.2);border-bottom-left-radius:4px}
+.msg.km .bb{background:linear-gradient(135deg,rgba(249,115,22,.05),rgba(249,115,22,.15));border:1px solid rgba(249,115,22,.2);border-bottom-right-radius:4px}
+.bb .og{font-weight:600;font-size:17px}
+.bb .tr{font-size:15px;color:var(--t2);margin-top:5px;padding-top:5px;border-top:1px solid rgba(255,255,255,.06)}
+.bb .badge{display:inline-block;font-size:9px;padding:1px 6px;border-radius:4px;background:rgba(16,185,129,.15);color:var(--green);margin-left:6px;vertical-align:middle}
+.bb .sp-btn{display:inline-block;margin-left:8px;padding:3px 10px;border-radius:6px;background:rgba(255,255,255,.1);border:none;color:var(--t2);font-size:14px;cursor:pointer;vertical-align:middle}
+.bb .sp-btn:active{background:rgba(255,255,255,.2)}
+.ctrl{padding:8px 0 4px;border-top:1px solid var(--bdr)}
+.la{display:flex;align-items:center;gap:10px;padding:10px;background:var(--card);border-radius:14px;border:1px solid var(--bdr);min-height:52px;transition:.3s}
+.la.a-ja{border-color:rgba(59,130,246,.4)}.la.a-km{border-color:rgba(249,115,22,.4)}
+.wc{width:40px;height:28px;display:flex;align-items:center;justify-content:center;gap:2px;flex-shrink:0}
+.wb{width:3px;border-radius:2px;background:var(--t3);height:6px}
+.wc.on .wb{animation:wv .5s ease-in-out infinite;background:var(--green)}
+.wc.on .wb:nth-child(1){animation-delay:0s}.wc.on .wb:nth-child(2){animation-delay:.1s}.wc.on .wb:nth-child(3){animation-delay:.2s}.wc.on .wb:nth-child(4){animation-delay:.15s}.wc.on .wb:nth-child(5){animation-delay:.05s}
+@keyframes wv{0%,100%{height:6px}50%{height:22px}}
+.lt{flex:1;font-size:14px;color:var(--t3);overflow:hidden;text-overflow:ellipsis}.lt.ht{color:var(--t1)}
+.dl{font-size:18px;flex-shrink:0}
+.pr{display:flex;justify-content:center;padding:10px 0 4px}
+.pb{width:64px;height:64px;border-radius:50%;border:3px solid var(--bdr);background:var(--card);color:var(--t3);font-size:26px;cursor:pointer;transition:.3s;display:flex;align-items:center;justify-content:center;position:relative}
+.pb.on{border-color:var(--green);color:var(--green);background:rgba(16,185,129,.08);box-shadow:0 0 30px rgba(16,185,129,.3)}
+.pb.on::after{content:'';position:absolute;inset:-10px;border-radius:50%;border:2px solid rgba(16,185,129,.15);animation:ro 2s infinite}
+@keyframes ro{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.5);opacity:0}}
+.plb{text-align:center;font-size:11px;color:var(--t3);margin-top:4px}
+.qs{margin-top:6px}.ql{font-size:10px;color:var(--t3);letter-spacing:1px;margin-bottom:4px}
+.qr{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}.qr::-webkit-scrollbar{display:none}
+.qc{flex-shrink:0;padding:7px 12px;border-radius:18px;background:var(--card);border:1px solid var(--bdr);color:var(--t2);font-size:11px;font-family:inherit;cursor:pointer;white-space:nowrap}
+.qc:active{background:rgba(59,130,246,.1);border-color:var(--blue);color:var(--blue)}
+.qc.km:active{background:rgba(249,115,22,.1);border-color:var(--orange);color:var(--orange)}
+.so{position:fixed;inset:0;background:var(--bg);z-index:100;display:flex;align-items:center;justify-content:center;padding:24px}
+.so.h{display:none}
+.sc{background:var(--card);border-radius:20px;border:1px solid var(--bdr);padding:32px 24px;max-width:400px;width:100%;text-align:center}
+.sc .lg{font-size:48px;margin-bottom:12px}.sc h2{font-size:20px;font-weight:900;margin-bottom:4px}
+.sc .tg{font-size:13px;color:var(--t2);margin-bottom:24px}
+.sc .stp{font-size:13px;color:var(--t3);margin-bottom:16px;line-height:1.6;text-align:left}.sc .stp strong{color:var(--t2)}
+.sbtn{width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--blue),#6366f1);color:white;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer}
+.sn{font-size:11px;color:var(--t3);margin-top:12px}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:10px;background:rgba(17,24,39,.95);border:1px solid var(--bdr);color:var(--t2);font-size:13px;z-index:50;opacity:0;transition:.3s;pointer-events:none}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<div class="so" id="setup">
+  <div class="sc">
+    <div class="lg">🌏</div><h2>教習ブリッジ</h2>
+    <div class="tg">KYOSHU BRIDGE — 教習所リアルタイム通訳</div>
+    <div class="stp"><strong>🎙 ハンズフリー通訳</strong><br>日本語→クメール語音声 / クメール語→日本語音声<br>言語自動判別。ボタン操作不要。</div>
+    <div class="stp"><strong>🔊 クメール語音声対応</strong><br>翻訳結果は自動で読み上げられます。<br>🔊ボタンで何度でもリプレイ可能。</div>
+    <button class="sbtn" onclick="init()">🎙️ マイクを許可してスタート</button>
+    <div class="sn">※ 初回のみマイク許可が必要です</div>
+  </div>
+</div>
+
+<div class="c">
+  <div class="hd"><h1>教習ブリッジ</h1><div class="sub">REAL-TIME INTERPRETER</div></div>
+  <div class="sb"><div class="sd off" id="dot"></div><span class="st" id="stxt">準備完了</span><span class="sl" id="slang"></span></div>
+  <div class="ta" id="area"></div>
+  <div class="ctrl">
+    <div class="la" id="la"><div class="wc" id="wc"><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div></div><div class="lt" id="lt">通訳を開始するには下のボタンをタップ</div><div class="dl" id="dl"></div></div>
+    <div class="pr"><button class="pb" id="pw" onclick="toggle()">⏻</button></div>
+    <div class="plb" id="pl">タップして通訳開始</div>
+    <div class="qs"><div class="ql">🇯🇵 指導員クイック</div><div class="qr" id="qj"></div><div class="ql" style="margin-top:6px">🇰🇭 教習生クイック</div><div class="qr" id="qk"></div></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- Hidden audio element for TTS playback -->
+<audio id="ttsAudio" preload="auto"></audio>
+
+<script>
+// ============================================================
+// Audio TTS — Google Translate TTS (APIキー不要、クメール語対応)
+// ============================================================
+const audio = document.getElementById('ttsAudio');
+let audioUnlocked = false;
+
+function unlockAudio() {
+  if (audioUnlocked) return;
+  // iOS/Safari対策: ユーザータップ起点で一度再生
+  audio.src = 'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAAYYoRwmHAAAAAAD/+1DEAAAB8ANeUAAAIgAADSAAAAEAAAGkAAAAIAAANIAAAARMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/7UMQbAAAADSAAAAAAAAANIAAAAAVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQ==';
+  audio.volume = 0.01;
+  audio.play().then(() => { audio.pause(); audio.volume = 1.0; audioUnlocked = true; }).catch(() => {});
+}
+
+function speakWithGoogleTTS(text, lang) {
+  return new Promise((resolve) => {
+    if (!text || text.startsWith('[')) { resolve(); return; }
+
+    const langCode = lang === 'ja' ? 'ja' : 'km';
+
+    // テキストが長い場合は分割（Google TTSは200文字制限）
+    const chunks = splitText(text, 180);
+    let idx = 0;
+
+    function playNext() {
+      if (idx >= chunks.length) { resolve(); return; }
+      const chunk = chunks[idx++];
+      const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${langCode}&q=${encodeURIComponent(chunk)}`;
+
+      audio.src = url;
+      audio.playbackRate = 0.9;
+      audio.onended = playNext;
+      audio.onerror = () => {
+        console.warn('TTS audio error, trying Web Speech API fallback');
+        fallbackSpeak(text, lang).then(resolve);
+      };
+      audio.play().catch(() => {
+        fallbackSpeak(text, lang).then(resolve);
+      });
+    }
+
+    setSt('sp', lang === 'ja' ? '🇯🇵 読み上げ中...' : '🇰🇭 អានសំឡេង...');
+    playNext();
+  });
+}
+
+function splitText(text, max) {
+  if (text.length <= max) return [text];
+  const chunks = [];
+  let start = 0;
+  while (start < text.length) {
+    let end = Math.min(start + max, text.length);
+    // 文の区切りで分割
+    if (end < text.length) {
+      const lastPeriod = text.lastIndexOf('。', end);
+      const lastSpace = text.lastIndexOf(' ', end);
+      const breakAt = Math.max(lastPeriod, lastSpace);
+      if (breakAt > start) end = breakAt + 1;
+    }
+    chunks.push(text.substring(start, end));
+    start = end;
+  }
+  return chunks;
+}
+
+// Web Speech API フォールバック（日本語用）
+function fallbackSpeak(text, lang) {
+  return new Promise((resolve) => {
+    if (!('speechSynthesis' in window)) { resolve(); return; }
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = lang === 'ja' ? 'ja-JP' : 'km-KH';
+    u.rate = 0.85;
+    u.onend = resolve;
+    u.onerror = () => resolve();
+    setTimeout(resolve, 10000);
+    speechSynthesis.speak(u);
+  });
+}
+
+// ============================================================
+// 辞書
+// ============================================================
+const DJ={
+  'おはようございます':'អរុណសួស្តី','おはよう':'អរុណសួស្តី',
+  'こんにちは':'សួស្តី','こんばんは':'សាយ័ណសួស្តី',
+  'お疲れ様でした':'អរគុណសម្រាប់ការខិតខំ','お疲れ様です':'អរគុណសម្រាប់ការខិតខំ','お疲れ様':'អរគុណសម្រាប់ការខិតខំ',
+  'さようなら':'លាសិនហើយ','また明日':'ជួបគ្នាថ្ងៃស្អែក',
+  'ありがとうございます':'អរគុណច្រើន','ありがとう':'អរគុណ',
+  'すみません':'សូមទោស','ごめんなさい':'សូមទោស',
+  'はい':'បាទ/ចាស','いいえ':'ទេ','お願いします':'សូម',
+  '分かりましたか':'យល់ទេ?','わかりましたか':'យល់ទេ?','わかりました':'យល់ហើយ',
+  '大丈夫ですか':'មិនអីទេ?','大丈夫です':'មិនអីទេ',
+  '体調はどうですか':'សុខភាពយ៉ាងម៉េច?','体調は大丈夫ですか':'សុខភាពមិនអីទេ?',
+  'トイレはあちらです':'បន្ទប់ទឹកនៅខាងនោះ','休憩しましょう':'សូមសម្រាក',
+  '水を飲みますか':'ចង់ផឹកទឹកទេ?','ちょっと待ってください':'សូមរង់ចាំបន្តិច',
+  '何か質問はありませんか':'មានសំណួរអ្វីទេ?','何か質問はありますか':'មានសំណួរអ្វីទេ?',
+  'ゆっくり話しますね':'ខ្ញុំនឹងនិយាយយឺតៗ','もう一度言いますね':'ខ្ញុំនឹងនិយាយម្ដងទៀត',
+  'シートベルトを締めてください':'សូមពាក់ខ្សែក្រវ៉ាត់សុវត្ថិភាព',
+  'ミラーを合わせてください':'សូមកែតម្រូវកញ្ចក់',
+  'シートの位置を調整してください':'សូមកែតម្រូវទីតាំងកៅអី',
+  'エンジンをかけてください':'សូមបើកម៉ាស៊ីន','エンジンを切ってください':'សូមបិទម៉ាស៊ីន',
+  'ブレーキを踏んでください':'សូមជាន់ហ្វ្រាំង','ブレーキを離してください':'សូមលែងជាន់ហ្វ្រាំង',
+  'アクセルをゆっくり踏んでください':'សូមជាន់ហ្គាសយឺតៗ',
+  'パーキングブレーキを解除してください':'សូមដោះហ្វ្រាំងដៃ',
+  '発進してください':'សូមចាប់ផ្តើមបើកបរ','止まってください':'សូមឈប់',
+  'ここに止まってください':'សូមឈប់នៅទីនេះ','まっすぐ進んでください':'សូមបើកបរត្រង់ទៅមុខ',
+  'スピードを落としてください':'សូមបន្ថយល្បឿន','速すぎます':'លឿនពេក','遅すぎます':'យឺតពេក',
+  'ブレーキは優しく踏んでください':'សូមជាន់ហ្វ្រាំងស្រាលៗ',
+  '急ブレーキはかけないでください':'កុំជាន់ហ្វ្រាំងភ្លាមៗ',
+  'ハンドルを右に回してください':'សូមបត់ស្តាំ','右に曲がってください':'សូមបត់ស្តាំ',
+  'ハンドルを左に回してください':'សូមបត់ឆ្វេង','左に曲がってください':'សូមបត់ឆ្វេង',
+  'ハンドルを戻してください':'សូមត្រឡប់កង់បើកបរ',
+  'ハンドルに力が入りすぎていますよ':'សូមកុំខំកាន់កង់ខ្លាំងពេក',
+  '右を見てください':'សូមមើលខាងស្តាំ','左を見てください':'សូមមើលខាងឆ្វេង',
+  '後ろを確認してください':'សូមពិនិត្យខាងក្រោយ','ミラーを見てください':'សូមមើលកញ្ចក់',
+  '巻き込み確認をしてください':'សូមពិនិត្យចំណុចងងឹត',
+  '右ウインカーを出してください':'សូមបើកភ្លើងសញ្ញាស្តាំ',
+  '左ウインカーを出してください':'សូមបើកភ្លើងសញ្ញាឆ្វេង',
+  '合図を出してください':'សូមបើកសញ្ញា','合図を戻してください':'សូមបិទសញ្ញា','合図を続けてください':'សូមបន្តសញ្ញា',
+  'クラッチを踏んでください':'សូមជាន់ឃ្លែត','クラッチをゆっくり離してください':'សូមលែងឃ្លែតយឺតៗ',
+  '半クラッチの位置を感じてください':'សូមស្វែងរកចំណុចពាក់កណ្ដាលឃ្លែត',
+  'シフトアップしてください':'សូមដំឡើងលេខ','シフトダウンしてください':'សូមបន្ថយលេខ',
+  '次の交差点を右に曲がってください':'សូមបត់ស្តាំនៅចំណុចប្រសព្វបន្ទាប់',
+  '次の交差点を左に曲がってください':'សូមបត់ឆ្វេងនៅចំណុចប្រសព្វបន្ទាប់',
+  '車線変更してください':'សូមប្តូរឡេន',
+  '歩行者がいます':'មានអ្នកដើរថ្មើរជើង សូមប្រយ័ត្ន',
+  '車間距離を保ってください':'សូមរក្សាគម្លាតសុវត្ថិភាព',
+  '信号が赤です':'ភ្លើងក្រហម សូមឈប់','信号が青です':'ភ្លើងបៃតង សូមបន្ត',
+  'バックしてください':'សូមថយក្រោយ',
+  '脱輪しないように':'សូមប្រយ័ត្នកុំឱ្យកង់ធ្លាក់ចេញ',
+  '窓を開けてください':'សូមបើកបង្អួច',
+  '危ない':'គ្រោះថ្នាក់!','落ち着いてください':'សូមស្ងប់ស្ងាត់',
+  '準備ができたら発進してください':'រៀបចំរួចហើយសូមចាប់ផ្តើមបើកបរ',
+  '次はS字コースです':'បន្ទាប់គឺផ្លូវកោង S','次はクランクコースです':'បន្ទាប់គឺផ្លូវកោងរាងកែង',
+  '次は踏切です':'បន្ទាប់គឺផ្លូវដែក','次は方向変換です':'បន្ទាប់គឺប្តូរទិសដៅ',
+  '次は縦列駐車です':'បន្ទorg់គឺចតស្របក្នុងជួរ',
+  '残念ながらここで検定中止となります':'សូមអភ័យទោស ការប្រឡងត្រូវបញ្ឈប់នៅទីនេះ',
+  '合格です':'ជាប់ហើយ សូមអបអរសាទរ!','不合格です':'សូមទោស អ្នកធ្លាក់ប្រឡង',
+  '失敗して当たり前ですよ':'ធ្វើខុសជារឿងធម្មតាទេ','一緒に頑張りましょう':'សូមខិតខំរួមគ្នា',
+  '少しずつ良くなっていますよ':'កំពុងល្អឡើងបន្តិចម្ដងៗ','はいその調子で':'បាទ បន្តបែបនេះ',
+  'とても良くなりましたね':'ល្អឡើងច្រើនណាស់','今日はよく頑張りましたね':'ថ្ងៃនេះខិតខំបានល្អណាស់',
+  'よくできました':'ធ្វើបានល្អ','もう一度やりましょう':'សាកម្ដងទៀត',
+  'ここで深呼吸しましょう':'សូមដកដង្ហើមវែងនៅទីនេះ',
+  '本当に理解できましたか':'យល់ច្បាស់មែនទេ?',
+  '視野を広く取りましょう':'សូមពង្រីកវិស័យចក្ខុឱ្យធំទូលាយ',
+  '譲り合う気持ちが大切です':'ការចេះសម្រួលគ្នាជារឿងសំខាន់',
+};
+
+const DK={
+  'អរុណសួស្តី':'おはようございます','សួស្តី':'こんにちは','សាយ័ណសួស្តី':'こんばんは',
+  'អរគុណ':'ありがとう','អរគុណច្រើន':'ありがとうございます','សូមទោស':'すみません',
+  'បាទ':'はい','ចាស':'はい','ទេ':'いいえ',
+  'យល់ហើយ':'分かりました','ខ្ញុំមិនយល់ទេ':'理解できません',
+  'សូមនិយាយម្ដងទៀត':'もう一度言ってください','យឺតៗបន្តិច':'もう少しゆっくり',
+  'មានសំណួរ':'質問があります','មិនអីទេ':'大丈夫です',
+  'ខ្ញុំភ័យ':'怖いです','ខ្ញុំត្រូវការសម្រាក':'休憩が必要です',
+  'ខ្ញុំឈឺក្បាល':'頭が痛いです','ខ្ញុំមិនស្រួលខ្លួនទេ':'体調が悪いです',
+  'បន្ទប់ទឹកនៅឯណា':'トイレはどこですか？',
+  'ខ្ញុំត្រៀមរួចហើយ':'準備できました','ខ្ញុំអស់កម្លាំង':'疲れました',
+  'ពិបាកណាស់':'難しいです','ខ្ញុំព្យាយាម':'頑張ります',
+  'សុខសប្បាយ':'元気です','លាសិនហើយ':'さようなら','ជួបគ្នាថ្ងៃស្អែក':'また明日',
+};
+
+// ============================================================
+// State
+// ============================================================
+let running=false,rec=null,recLang=null;
+
+function init(){
+  unlockAudio();
+  navigator.mediaDevices.getUserMedia({audio:true}).then(s=>{
+    s.getTracks().forEach(t=>t.stop());
+    localStorage.setItem('km','1');
+    document.getElementById('setup').classList.add('h');
+    // テスト音声
+    setTimeout(()=>speakWithGoogleTTS('教習ブリッジを開始します','ja'),300);
+    renderQP();
+  }).catch(()=>toast('⚠️ マイクの許可が必要です'));
+}
+if(localStorage.getItem('km')==='1'){document.getElementById('setup').classList.add('h');renderQP();}
+
+function toggle(){
+  unlockAudio();
+  running?stop():start();
+}
+function start(){
+  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){toast('⚠️ Chrome/Edgeをお使いください');return;}
+  running=true;
+  document.getElementById('pw').classList.add('on');
+  document.getElementById('pl').textContent='タップして通訳停止';
+  beginR('ja');
+}
+function stop(){
+  running=false;
+  if(rec){try{rec.abort();}catch(e){}rec=null;}
+  document.getElementById('pw').classList.remove('on');
+  document.getElementById('pl').textContent='タップして通訳開始';
+  setSt('off','停止中');setL('通訳を開始するには下のボタンをタップ','');
+  document.getElementById('wc').classList.remove('on');
+  document.getElementById('la').className='la';
+}
+
+function beginR(lang){
+  if(!running)return;
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const r=new SR();
+  r.lang=lang==='ja'?'ja-JP':'km-KH';
+  r.continuous=true;r.interimResults=true;
+  rec=r;recLang=lang;
+  r.onstart=()=>{setSt('on','🇯🇵🇰🇭 待機中...');document.getElementById('wc').classList.add('on');};
+  r.onresult=e=>{
+    let it='',fn='';
+    for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)fn+=e.results[i][0].transcript;else it+=e.results[i][0].transcript;}
+    if(it){const d=det(it);setL(it,d==='ja'?'🇯🇵':d==='km'?'🇰🇭':'🔍');document.getElementById('la').className=`la ${d==='ja'?'a-ja':d==='km'?'a-km':''}`;}
+    if(fn&&fn.trim()){const t=fn.trim(),d=det(t);if(d!==lang&&d!=='unknown'){r.abort();handle(t,d);return;}handle(t,d);}
+  };
+  r.onerror=()=>{};
+  r.onend=()=>{if(running){setTimeout(()=>beginR(recLang==='ja'?'km':'ja'),150);}};
+  try{r.start();}catch(e){setTimeout(()=>{if(running)beginR(lang);},500);}
+}
+
+function det(t){if(/[\u1780-\u17FF]/.test(t))return'km';if(/[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]/.test(t))return'ja';return'ja';}
+
+async function handle(text,src){
+  if(!text)return;
+  const tgt=src==='ja'?'km':'ja';
+  document.getElementById('slang').textContent=src==='ja'?'🇯🇵→🇰🇭':'🇰🇭→🇯🇵';
+  const dict=src==='ja'?DJ:DK;
+  let tr=look(text,dict),fd=!!tr;
+  if(!tr){tr='[辞書未登録]';fd=false;}
+  addMsg(src,text,tr,fd,tgt);
+  setL('','');
+  if(fd){
+    // 音声再生中は認識を止める
+    if(rec){try{rec.abort();}catch(e){}}
+    await speakWithGoogleTTS(tr,tgt);
+    if(running)beginR(tgt==='ja'?'km':'ja');
+  }else{setSt('on','🇯🇵🇰🇭 待機中...');}
+}
+
+function look(text,dict){
+  const c=text.replace(/[\s。、！？!?.]+$/g,'').trim();
+  if(dict[c])return dict[c];if(dict[text])return dict[text];
+  const s=c.replace(/[。、！？!?]/g,'').trim();
+  if(dict[s])return dict[s];
+  let best=null,bl=0;
+  for(const[k,v]of Object.entries(dict)){if(s.includes(k)&&k.length>bl){best=v;bl=k.length;}if(k.includes(s)&&s.length>bl){best=v;bl=s.length;}}
+  if(best&&bl>=s.length*.5)return best;
+  const t=s.replace(/(してください|ください|しましょう|ましょう|ですよ|ですね|です|ます|よ|ね|か)$/,'').trim();
+  for(const[k,v]of Object.entries(dict)){const kt=k.replace(/(してください|ください|しましょう|ましょう|ですよ|ですね|です|ます|よ|ね|か)$/,'').trim();if(t===kt)return v;if(t.length>3&&kt.includes(t)&&t.length>=kt.length*.5)return v;}
+  return null;
+}
+
+// ============================================================
+// UI
+// ============================================================
+function addMsg(lang,og,tr,fd,tgtLang){
+  const a=document.getElementById('area'),m=document.createElement('div');
+  m.className=`msg ${lang}`;
+  const badge=fd?'<span class="badge">✓</span>':'';
+  // エスケープしてからボタンに渡す
+  const trEsc=tr.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+  const spBtn=fd?` <button class="sp-btn" onclick="replaySp('${trEsc}','${tgtLang}')">🔊</button>`:'';
+  m.innerHTML=`<div class="ml">${lang==='ja'?'🇯🇵 指導員':'🇰🇭 教習生'}</div><div class="bb"><div class="og">${esc(og)}${badge}${spBtn}</div><div class="tr">${esc(tr)}</div></div>`;
+  a.appendChild(m);a.scrollTop=a.scrollHeight;
+  while(a.children.length>40)a.removeChild(a.firstChild);
+}
+function replaySp(text,lang){unlockAudio();speakWithGoogleTTS(text,lang);}
+function setSt(cls,txt){document.getElementById('dot').className=`sd ${cls}`;document.getElementById('stxt').textContent=txt;}
+function setL(t,e){const el=document.getElementById('lt');el.textContent=t||'待機中...';el.className=t?'lt ht':'lt';document.getElementById('dl').textContent=e;}
+function esc(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML;}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+function renderQP(){
+  const qj=['おはようございます','お疲れ様でした','こんにちは','ブレーキを踏んで','発進してください','止まってください','右に曲がって','左に曲がって','危ない','よくできました','落ち着いて','失敗して当たり前'];
+  const qk=['សួស្តី','អរគុណ','ខ្ញុំមិនយល់ទេ','សូមនិយាយម្ដងទៀត','យឺតៗបន្តិច','មានសំណួរ','យល់ហើយ','ខ្ញុំភ័យ','ខ្ញុំត្រូវការសម្រាក'];
+  const ja=document.getElementById('qj'),km=document.getElementById('qk');ja.innerHTML='';km.innerHTML='';
+  qj.forEach(p=>{const c=document.createElement('button');c.className='qc';c.textContent=p;c.onclick=()=>{unlockAudio();handle(p,'ja');};ja.appendChild(c);});
+  qk.forEach(p=>{const c=document.createElement('button');c.className='qc km';c.textContent=p;c.onclick=()=>{unlockAudio();handle(p,'km');};km.appendChild(c);});
+}
+</script>
+</body>
+</html>
